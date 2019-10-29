@@ -1,0 +1,26 @@
+name: fastknn
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.7
+  - pip
+  - setuptools
+  - wheel
+  - tqdm
+  - twine
+  - autopep8
+  - retrying
+  - ipykernel
+  - requests
+  - pandas
+  - numpy
+  - pytest
+  - fastparquet
+  - pyarrow # useful ?
+  - python-snappy # useful ?
+  - pyyaml
+  - pybind11
+  - pip:
+    - nmslib

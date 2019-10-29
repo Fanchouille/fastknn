@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# JetBrains PyCharm
+.idea/
+
+# Python
+__pycache__/
+
+# Anaconda environment
+.conda/
+
+# Jupyter Notebooks
+notebooks/
+*.ipynb
+
+# tmp
+tmp/
+
+# tensorboard runs
+runs/
+
+#models
+models/
+
+#indexes
+indexes/
+
+runs/
+
+# pyc
+*.pyc
