@@ -22,5 +22,6 @@ dependencies:
   - python-snappy # useful ?
   - pyyaml
   - pybind11
+  - ujson
   - pip:
     - nmslib

@@ -26,6 +26,9 @@ models/
 #indexes
 indexes/
 
+#mappings
+mappings/
+
 runs/
 
 # pyc

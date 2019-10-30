@@ -1,4 +1,4 @@
-#TODO
+# TODO
 
 - Add remove_input from kNN list
 - Check if delta mode is possible
