@@ -29,11 +29,11 @@ def get_mapped_matrix(matrix, ref_id_dict):
     return result_matrix
 
 
-def get_mapped_matrix_as_df(matrix, id_column, id_dict, ref_id_dict, nearest_neighbours_column="nearest_neighbours"):
-    result_matrix = get_mapped_matrix(matrix, ref_id_dict)
-    df_data = [[id_dict[i], result_matrix[i, :].tolist()] for i in range(len(result_matrix))]
+def get_mapped_matrix_as_df(ids, distances, nn_column="nearest_neighbours",
+                            distance_column="distances"):
+    df_data = [[i, ids[i, :].tolist(), distances[i, :].tolist()] for i in range(len(ids))]
 
-    return pd.DataFrame(df_data, columns=[id_column, nearest_neighbours_column])
+    return pd.DataFrame(df_data, columns=["index", nn_column, distance_column])
 
 
 def get_data_matrix(df, embeddings_column):

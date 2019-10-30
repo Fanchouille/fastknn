@@ -20,16 +20,25 @@ tmp/
 # tensorboard runs
 runs/
 
-#models
+# models
 models/
 
-#indexes
+# indexes
 indexes/
 
-#mappings
+# mappings
 mappings/
 
 runs/
 
 # pyc
 *.pyc
+
+# bin
+*.bin
+
+# dat
+*.dat
+
+# mappings
+*.json

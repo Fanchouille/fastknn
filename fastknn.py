@@ -1,5 +1,6 @@
-from .indexer import NMSIndexer
-from .datautils import *
+from indexer import NMSIndexer
+from datautils import *
+import os
 
 
 class FastKnn(object):
@@ -35,14 +36,24 @@ class FastKnn(object):
         except:
             print("Bug encountered in create_fastknn")
 
-    def save_fastknn(self, id_dict, indexer, index_params, fastknn_folder):
+    def save_fastknn(self, fastknn_folder):
+        if not os.path.isdir(fastknn_folder):
+            os.mkdir(fastknn_folder)
         # Integer index to id mappings
-        save_dict(id_dict, dict_file_path=fastknn_folder + "/mappings.json")
+        save_dict(self.ref_id_dict, dict_file_path=fastknn_folder + "/mappings.json")
         # Indexer params
-        save_dict(index_params, dict_file_path=fastknn_folder + "/index_params.json")
+        save_dict(self.index_params, dict_file_path=fastknn_folder + "/index_params.json")
         # Indexer
-        indexer.save_index(index_path=fastknn_folder + "/index.bin")
+        self.index.save_index(index_path=fastknn_folder + "/index.bin")
 
     def query(self, query, k):
         ids, distance = self.index.query_index_batch_by_vector(query, k)
-        return
+        # Map indexes to ids
+        ids = get_mapped_matrix(ids, self.ref_id_dict)
+        # Cast distance list to np.array
+        distance = np.array([dist for dist in distance])
+        return ids, distance
+
+    def query_as_df(self, query, k, nn_column="nearest_neighbours", distance_column="distances"):
+        ids, distance = self.query(query, k)
+        return get_mapped_matrix_as_df(ids, distance, nn_column=nn_column, distance_column=distance_column)
