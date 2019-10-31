@@ -1,5 +1,5 @@
-from indexer import NMSIndexer
-from datautils import *
+from .indexer import NMSIndexer
+from .datautils import *
 import os
 
 

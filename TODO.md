@@ -1,9 +1,4 @@
 # TODO
-
-- Add remove_input from kNN list
+- Add Data types (sparse data is not yet supported)
 - Check if delta mode is possible
-- Add Data types (sparse)
-- Add setup.py
-- Add filter category
 - Add disjoint sets
-- Add reco mode

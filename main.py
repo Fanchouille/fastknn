@@ -1,7 +1,7 @@
 # coding: utf-8
 import pandas as pd
 from fastknn import FastKnn
-import datautils as du
+from fastknn import datautils as du
 
 
 def main():
