@@ -15,7 +15,9 @@ and `index_space` (default: `cosinesimil`)
 - See [here](https://github.com/nmslib/nmslib/blob/master/manual/methods.md) for different methods
 
 Example :
-
+    
+    from fastknn import FastKnn
+    
     # Create index...
     fastknn = FastKnn(data, id_dict)
     
