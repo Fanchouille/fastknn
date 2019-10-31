@@ -9,6 +9,7 @@ class NMSIndexer(object):
                              "efC": efC,
                              "num_threads": num_threads}
         if index_path:
+
             self.index = self.load_index(index_path, self.index_params)
         else:
             self.index = self.initialize_index(self.index_params)
@@ -19,7 +20,10 @@ class NMSIndexer(object):
 
     def load_index(self, index_path, index_params):
         index = self.initialize_index(index_params)
-        index.loadIndex(index_path, load_data=True)
+        if (index_params["method"] == "hnsw") and (index_params["space"] in ["cosinesimil", "l2"]):
+            index.loadIndex(index_path, load_data=False)
+        else:
+            index.loadIndex(index_path, load_data=True)
 
         return index
 
@@ -32,7 +36,10 @@ class NMSIndexer(object):
         self.index.createIndex(index_time_params)
 
     def save_index(self, index_path):
-        self.index.saveIndex(index_path, save_data=True)
+        if (self.index_params["method"] == "hnsw") and (self.index_params["space"] in ["cosinesimil", "l2"]):
+            self.index.saveIndex(index_path, save_data=False)
+        else:
+            self.index.saveIndex(index_path, save_data=True)
 
     def query_index_batch_by_vector(self, query, k=10):
         knns = self.index.knnQueryBatch(query, k=k, num_threads=self.index_params["num_threads"])

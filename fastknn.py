@@ -4,10 +4,10 @@ import os
 
 
 class FastKnn(object):
-    def __init__(self, data, id_dict, fastknn_folder=None,
+    def __init__(self, data=None, id_dict=None, fastknn_folder=None,
                  index_method="hnsw", index_space='cosinesimil', index_M=20, index_efC=200):
         if fastknn_folder:
-            ref_id_dict, index, index_params = self.load_fastknn()
+            ref_id_dict, index, index_params = self.load_fastknn(fastknn_folder)
             self.ref_id_dict = ref_id_dict
             self.index = index
             self.index_params = index_params
@@ -18,14 +18,17 @@ class FastKnn(object):
             self.index = index
             self.index_params = index_params
 
-    def load_fastknn(self):
+    def load_fastknn(self, fastknn_folder):
         try:
-            ref_id_dict = load_ref_id_dict(self.fastknn_folder + "/mappings.json")
-            index_params = load_dict(self.fastknn_folder + "/index_params.json")
-            index = NMSIndexer(index_path=self.fastknn_folder + "/index.bin")
+            ref_id_dict = load_ref_id_dict(fastknn_folder + "/mappings.json")
+            index_params = load_dict(fastknn_folder + "/index_params.json")
+            index = NMSIndexer(index_path=fastknn_folder + "/index.bin",
+                               method=index_params["method"], space=index_params["space"],
+                               M=index_params["M"], efC=index_params["efC"], num_threads=index_params["num_threads"])
             return ref_id_dict, index, index_params
         except:
-            print("No fastKnn project found at [{}]".format(self.fastknn_folder))
+            print("No fastKnn project found at [{}]".format(fastknn_folder))
+            return None, None, None
 
     def create_fastknn(self, data, id_dict, index_method, index_space, index_M, index_efC):
         try:
@@ -54,6 +57,19 @@ class FastKnn(object):
         distance = np.array([dist for dist in distance])
         return ids, distance
 
-    def query_as_df(self, query, k, nn_column="nearest_neighbours", distance_column="distances"):
+    def query_as_df(self, query, k, nn_column="nearest_neighbours",
+                    distance_column="distances", same_ids=False, remove_identity=False):
+        if remove_identity:
+            # We need to get 1 more nearest neightbours to get k real ones
+            k += 1
         ids, distance = self.query(query, k)
-        return get_mapped_matrix_as_df(ids, distance, nn_column=nn_column, distance_column=distance_column)
+        result_df = get_mapped_matrix_as_df(ids, distance, nn_column=nn_column, distance_column=distance_column)
+        cols = list(result_df.columns.values)
+        if same_ids:  # then we can map indexes back to real ids
+            result_df.loc[:, "id"] = result_df.loc[:, "index"].map(self.ref_id_dict)
+            if remove_identity:
+                result_df.loc[:, nn_column] = result_df.apply(
+                    lambda x: [nn for nn in x[nn_column] if nn != x["id"]][:k - 1],
+                    axis=1)
+            result_df = result_df[["id"] + cols]
+        return result_df

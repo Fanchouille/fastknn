@@ -33,7 +33,8 @@ def get_mapped_matrix_as_df(ids, distances, nn_column="nearest_neighbours",
                             distance_column="distances"):
     df_data = [[i, ids[i, :].tolist(), distances[i, :].tolist()] for i in range(len(ids))]
 
-    return pd.DataFrame(df_data, columns=["index", nn_column, distance_column])
+    result_df = pd.DataFrame(df_data, columns=["index", nn_column, distance_column])
+    return result_df
 
 
 def get_data_matrix(df, embeddings_column):

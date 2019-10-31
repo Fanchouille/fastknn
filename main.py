@@ -10,18 +10,24 @@ def main():
 
     # Process data
     data = du.get_data_matrix(df, "embedding")
-    id_dict =  du.get_id_dict_from_df(df, "video_id")
+    id_dict = du.get_id_dict_from_df(df, "video_id")
 
-    # Create index or load if exists
+    # Create index...
     fastknn = FastKnn(data, id_dict)
+
+    # Save index
     fastknn.save_fastknn("test_fastknn")
 
+    # ...or load if exists
+    fastknn = FastKnn(fastknn_folder="test_fastknn")
+
     # Choose sample vectors
-    query = data[:3,:]
+    query = data[:3, :]
 
-    results_df = fastknn.query_as_df(query, k=10)
+    # Query index & get results as df
+    results_df = fastknn.query_as_df(query, k=10, same_ids=True, remove_identity=True)
 
-    print(results_df)
+    print(results_df.loc[:, ["id", "nearest_neighbours"]])
 
 
 if __name__ == '__main__':
