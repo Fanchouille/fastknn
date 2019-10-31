@@ -49,8 +49,10 @@ Example :
     - index parameters as a json file
     - real index object as a bin file
     
-- One can get a saved FastKnn back by specifying `fastknn_folder`   
+- Get a saved FastKnn back by specifying `fastknn_folder`
+
+- Query a FastKnn by using `query_as_df` provided method
     
-- `datautils.py` provides method to get `data` and `id_dict` from pandas dataframes.
+- `datautils.py` provides method to get `data` and `id_dict` easily from pandas dataframes.
 
 
