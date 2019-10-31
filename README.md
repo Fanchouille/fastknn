@@ -2,7 +2,7 @@
 
 ## Purpose
 Provide a lib to create a fast kNN index and get results as a pandas dataframe.
-FastKnn use mainly [nmslib](https://github.com/nmslib/nmslib/) as the (fast) kNN backend.
+FastKnn use mainly [nmslib](https://github.com/nmslib/nmslib/) as (fast) kNN backend.
 
 
 ## Install
@@ -22,7 +22,7 @@ Example :
     fastknn = FastKnn(data, id_dict)
     
     # Save index
-    fastknn.save_fastknn("test_fastknn")
+    fastknn.save("test_fastknn")
     
     # ...or load if exists
     fastknn = FastKnn(fastknn_folder="test_fastknn")
@@ -36,10 +36,10 @@ Example :
 - Where `data` is a m x n numpy array matrix and `id_dict` is a python dictionary with mappings from integer index (0 to m-1) to real ids.
     - `fastknn.datautils` provides method to get `data` and `id_dict` easily from pandas dataframes.
 
-- Once instantiated, `save_fastknn` method saves as files :
+- Once instantiated, `save` method saves as files :
     - mappings from integer index to real ids as a json file
     - index parameters as a json file
-    - real index object as a bin file
+    - index as a bin file
     
 - Get a saved FastKnn back by specifying `fastknn_folder`
 

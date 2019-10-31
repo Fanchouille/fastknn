@@ -16,7 +16,7 @@ def main():
     fastknn = FastKnn(data, id_dict)
 
     # Save index
-    fastknn.save_fastknn("test_fastknn")
+    fastknn.save("test_fastknn")
 
     # ...or load if exists
     fastknn = FastKnn(fastknn_folder="test_fastknn")
