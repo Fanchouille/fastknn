@@ -37,6 +37,8 @@ Example with dense data :
 
 - Where `data` is a m x n numpy array matrix and `id_dict` is a python dictionary with mappings from integer index (0 to m-1) to real ids.
     - `fastknn.datautils` provides method to get `data` and `id_dict` easily from pandas dataframes.
+    
+- Other important parameters :  `data_type` (default: `dense`) and `dist_type` (default: `float`) - see main.py for examples.
 
 - Once instantiated, `save` method saves as files :
     - mappings from integer index to real ids as a json file
@@ -48,6 +50,7 @@ Example with dense data :
 - Query a FastKnn by using `query_as_df` provided method with the following parameters 
     - `query` - p x n numpy array - matrix to be matched to `data`
     - `k` - integer - the number of nearest neighbours
+    - `query_index` - list of integer - index of the data provided in query
     - `nn_column` - string - name of resulting column containing the nearest neighbours (default: `nearest_neighbours`)
     - `distance_column` - string - name of resulting column containing the distances to nearest neighbours (default: `distances`)
     - `same_ids` - bool - when querying the same data that was indexed, gets index + real ids (default: `False`)
