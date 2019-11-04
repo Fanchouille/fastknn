@@ -49,8 +49,8 @@ Example with dense data :
 
 - Query a FastKnn by using `query_as_df` provided method with the following parameters 
     - `query` - p x n numpy array - matrix to be matched to `data`
-    - `k` - integer - the number of nearest neighbours
-    - `query_index` - list of integer - index of the data provided in query
+    - `k` - integer - the number of nearest neighbours (default `10`)
+    - `query_index` - list of integer - index of the data provided in query (default: `None` - takes row index as index)
     - `nn_column` - string - name of resulting column containing the nearest neighbours (default: `nearest_neighbours`)
     - `distance_column` - string - name of resulting column containing the distances to nearest neighbours (default: `distances`)
     - `same_ids` - bool - when querying the same data that was indexed, gets index + real ids (default: `False`)

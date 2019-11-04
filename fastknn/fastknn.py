@@ -59,7 +59,7 @@ class FastKnn(object):
         distance = np.array([dist for dist in distance])
         return ids, distance
 
-    def query_as_df(self, query, k, query_index=None, nn_column="nearest_neighbours",
+    def query_as_df(self, query, k=10, query_index=None, nn_column="nearest_neighbours",
                     distance_column="distances", same_ids=False, remove_identity=False):
         if remove_identity:
             # We need to get 1 more nearest neightbours to get k real ones
