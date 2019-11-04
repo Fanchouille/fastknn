@@ -14,7 +14,9 @@ and `index_space` (default: `cosinesimil`)
 - See [here](https://github.com/nmslib/nmslib/blob/master/manual/spaces.md) for different spaces
 - See [here](https://github.com/nmslib/nmslib/blob/master/manual/methods.md) for different methods
 
-Example :
+This code has been tested with `hnsw` method and `cosinesimil` / `l2` space for dense data and `cosinesimil_sparse` / `cosinesimil_sparse_fast` space.
+
+Example with dense data :
     
     from fastknn import FastKnn
     

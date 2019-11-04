@@ -17,7 +17,8 @@ setuptools.setup(
         'numpy',
         'pandas',
         'pybind11',
-        'nmslib',
+        'nmslib>=1.8.1',
+        'scipy',
         'ujson'],
     classifiers=[
         "Development Status :: 2 - Beta",

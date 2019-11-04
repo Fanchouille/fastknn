@@ -5,15 +5,16 @@ import os
 
 class FastKnn(object):
     def __init__(self, data=None, id_dict=None, fastknn_folder=None,
-                 index_method="hnsw", index_space='cosinesimil', index_M=20, index_efC=200):
+                 index_method="hnsw", index_space='cosinesimil', data_type="dense", dist_type="float", index_M=20,
+                 index_efC=200):
         if fastknn_folder:
             ref_id_dict, index, index_params = self.load(fastknn_folder)
             self.ref_id_dict = ref_id_dict
             self.index = index
             self.index_params = index_params
         else:
-            ref_id_dict, index, index_params = self.create_fastknn(data, id_dict, index_method,
-                                                                   index_space, index_M, index_efC)
+            ref_id_dict, index, index_params = self.create_fastknn(data, id_dict, index_method, index_space, data_type,
+                                                                   dist_type, index_M, index_efC)
             self.ref_id_dict = ref_id_dict
             self.index = index
             self.index_params = index_params
@@ -24,20 +25,21 @@ class FastKnn(object):
             index_params = load_dict(fastknn_folder + "/index_params.json")
             index = NMSIndexer(index_path=fastknn_folder + "/index.bin",
                                method=index_params["method"], space=index_params["space"],
+                               data_type=index_params["data_type"], dist_type=index_params["dist_type"],
                                M=index_params["M"], efC=index_params["efC"], num_threads=index_params["num_threads"])
             return ref_id_dict, index, index_params
         except:
-            print("No fastKnn project found at [{}]".format(fastknn_folder))
-            return None, None, None
+            raise
 
-    def create_fastknn(self, data, id_dict, index_method, index_space, index_M, index_efC):
+    def create_fastknn(self, data, id_dict, index_method, index_space, data_type, dist_type, index_M, index_efC):
         try:
-            indexer = NMSIndexer(method=index_method, space=index_space, M=index_M, efC=index_efC)
+            indexer = NMSIndexer(method=index_method, space=index_space, data_type=data_type, dist_type=dist_type,
+                                 M=index_M, efC=index_efC)
             indexer.add_batch_data(data, list(id_dict.keys()))
             indexer.train_index()
             return id_dict, indexer, indexer.index_params
         except:
-            print("Bug encountered in create_fastknn")
+            raise
 
     def save(self, fastknn_folder):
         if not os.path.isdir(fastknn_folder):
@@ -57,13 +59,14 @@ class FastKnn(object):
         distance = np.array([dist for dist in distance])
         return ids, distance
 
-    def query_as_df(self, query, k, nn_column="nearest_neighbours",
+    def query_as_df(self, query, k, query_index=None, nn_column="nearest_neighbours",
                     distance_column="distances", same_ids=False, remove_identity=False):
         if remove_identity:
             # We need to get 1 more nearest neightbours to get k real ones
             k += 1
         ids, distance = self.query(query, k)
-        result_df = get_mapped_matrix_as_df(ids, distance, nn_column=nn_column, distance_column=distance_column)
+        result_df = get_mapped_matrix_as_df(ids, distance, index=query_index, nn_column=nn_column,
+                                            distance_column=distance_column)
         cols = list(result_df.columns.values)
         if same_ids:  # then we can map indexes back to real ids
             result_df.loc[:, "id"] = result_df.loc[:, "index"].map(self.ref_id_dict)

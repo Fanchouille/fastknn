@@ -3,6 +3,7 @@ import numpy as np
 from collections import defaultdict
 from operator import itemgetter
 import ujson
+from scipy.sparse import csr_matrix
 
 
 def load_ref_id_dict(dict_file_path):
@@ -29,16 +30,33 @@ def get_mapped_matrix(matrix, ref_id_dict):
     return result_matrix
 
 
-def get_mapped_matrix_as_df(ids, distances, nn_column="nearest_neighbours",
+def get_mapped_matrix_as_df(ids, distances, index=None, nn_column="nearest_neighbours",
                             distance_column="distances"):
-    df_data = [[i, ids[i, :].tolist(), distances[i, :].tolist()] for i in range(len(ids))]
+    if index is None:
+        index = [i for i in range(len(ids))]
+    df_data = [[index[i], ids[i, :].tolist(), distances[i, :].tolist()] for i in range(len(ids))]
 
     result_df = pd.DataFrame(df_data, columns=["index", nn_column, distance_column])
     return result_df
 
 
-def get_data_matrix(df, embeddings_column):
-    return np.stack(df.loc[:, embeddings_column].values).astype(np.float32)
+def create_sparse_matrix(df, dim1, dim2, value=None):
+    rows, r_pos = np.unique(df.loc[:, dim1], return_inverse=True)
+    cols, c_pos = np.unique(df.loc[:, dim2], return_inverse=True)
+    if value:
+        data = df.loc[:, value].values.astype(np.float32)
+    else:
+        data = np.ones(r_pos.shape, np.float32)
+
+    id_dict = dict(zip([i for i in range(len(rows))], rows))
+    return csr_matrix((data, (r_pos, c_pos))), id_dict
+
+
+def get_data_matrix(df, embeddings_columns):
+    if len(embeddings_columns) == 1:
+        return np.stack(df.loc[:, embeddings_columns[0]].values).astype(np.float32)
+    else:
+        return df.loc[:, embeddings_columns].values.astype(np.float32)
 
 
 def get_id_dict_from_df(df, id_column):
