@@ -71,12 +71,13 @@ class FastKnn(object):
         if same_ids:  # then we can map indexes back to real ids
             result_df.loc[:, "id"] = result_df.loc[:, "index"].map(self.ref_id_dict)
             if remove_identity:
+                result_df.loc[:, distance_column] = result_df.apply(
+                    lambda x: [x[distance_column][i] for i in range(len(x[nn_column]))
+                               if x[nn_column][i] != x["id"]][: k - 1],
+                    axis=1)
                 result_df.loc[:, nn_column] = result_df.apply(
                     lambda x: [nn for nn in x[nn_column] if nn != x["id"]][:k - 1],
                     axis=1)
-                result_df.loc[:, distance_column] = result_df.apply(
-                    lambda x: [x[distance_column][i] for i in range(len(x[nn_column]))
-                               if x[nn_column][i] != x["id"]][:k - 1],
-                    axis=1)
             result_df = result_df[["id"] + cols]
+
         return result_df

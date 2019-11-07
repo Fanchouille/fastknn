@@ -13,13 +13,12 @@ def main(data_type_demo="DENSE"):
         print("*" * 100)
 
         # Load Data
-        df = pd.read_parquet("/Users/fanch/PythonNotebooks/Lab/fast_knn/data/videos.snappy.parquet",
-                             engine="fastparquet")
-        df = df.head(100)
+        df = pd.read_csv("data/data_banknote_authentication.txt", delimiter=",", header=None)
 
         # Process data
-        data = du.get_data_matrix(df, ["embedding"])
-        id_dict = du.get_id_dict_from_df(df, "video_id")
+        data = du.get_data_matrix(df, [0, 1, 2, 3, 4])
+        # Fake index here (identity mapping)
+        id_dict = dict(zip(df.index.values.tolist(), df.index.values.tolist()))
 
         # Create index...
         fastknn = FastKnn(data, id_dict, index_space="l2")
@@ -31,11 +30,15 @@ def main(data_type_demo="DENSE"):
         fastknn = FastKnn(fastknn_folder="test_fastknn_dense")
 
         # Choose sample vectors
-        query = data[:3, :]
+        query_index = [0, 1, 2]
+        query = data[query_index, :]
+
+        print(data[0,:])
+        print(data[715, :])
 
         # Query index & get results as df
-        results_df = fastknn.query_as_df(query, k=10, same_ids=True, remove_identity=True)
-        print(results_df.loc[:, ["id", "nearest_neighbours"]])
+        results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
+        print(results_df.iloc[0])
 
     elif data_type_demo == "SPARSE":
         # SPARSE DATA
@@ -44,7 +47,7 @@ def main(data_type_demo="DENSE"):
         print("*" * 100)
 
         # Load movielens dataset
-        df = pd.read_csv("movielens/movielens.csv")
+        df = pd.read_csv("data/movielens.csv")
 
         # Process data
         data, id_dict = du.create_sparse_matrix(df, dim1="movieName", dim2="userId", value="rating")
@@ -64,11 +67,10 @@ def main(data_type_demo="DENSE"):
 
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
-        print(results_df.loc[:, ["id", "nearest_neighbours"]])
+        print(results_df)
 
     else:
         pass
 
-
 if __name__ == '__main__':
-    main("SPARSE")
+    main("DENSE")
