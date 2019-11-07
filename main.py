@@ -2,7 +2,6 @@
 import pandas as pd
 from fastknn import FastKnn
 from fastknn import datautils as du
-from fastknn.indexer import NMSIndexer
 
 
 def main(data_type_demo="DENSE"):
@@ -33,12 +32,8 @@ def main(data_type_demo="DENSE"):
         query_index = [0, 1, 2]
         query = data[query_index, :]
 
-        print(data[0,:])
-        print(data[715, :])
-
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
-        print(results_df.iloc[0])
 
     elif data_type_demo == "SPARSE":
         # SPARSE DATA
@@ -67,10 +62,10 @@ def main(data_type_demo="DENSE"):
 
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
-        print(results_df)
 
     else:
         pass
+
 
 if __name__ == '__main__':
     main("DENSE")
