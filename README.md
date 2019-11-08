@@ -46,6 +46,7 @@ Example with dense data:
     - mappings from integer index to real ids as a json file
     - index parameters as a json file
     - index as a bin file
+    - target dictionary as a json file
     
 - Get a saved FastKnn back by specifying `fastknn_folder`
 
