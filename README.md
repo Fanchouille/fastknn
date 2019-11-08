@@ -1,8 +1,8 @@
 # FastKnn
 
 ## Purpose
-Provide a lib to create a fast kNN index and get results as a pandas dataframe.
-FastKnn use mainly [nmslib](https://github.com/nmslib/nmslib/) as (fast) kNN backend.
+Provide a lib to create a fast kNN index and get results as a pandas dataframe
+FastKnn use mainly [nmslib](https://github.com/nmslib/nmslib/) as (fast) kNN backend
 
 
 ## Install
@@ -14,9 +14,9 @@ and `index_space` (default: `cosinesimil`)
 - See [here](https://github.com/nmslib/nmslib/blob/master/manual/spaces.md) for different spaces
 - See [here](https://github.com/nmslib/nmslib/blob/master/manual/methods.md) for different methods
 
-This code has been tested with `hnsw` method and `cosinesimil` / `l2` space for dense data and `cosinesimil_sparse` / `cosinesimil_sparse_fast` space.
+This code has been tested with `hnsw` method and `cosinesimil` / `l2` space for dense data and `cosinesimil_sparse` / `cosinesimil_sparse_fast` space
 
-Example with dense data :
+Example with dense data:
     
     from fastknn import FastKnn
     
@@ -35,19 +35,21 @@ Example with dense data :
     # Query index & get results as df
     results_df = fastknn.query_as_df(query, k=10, same_ids=True, remove_identity=True)
 
-- Where `data` is a m x n numpy array matrix and `id_dict` is a python dictionary with mappings from integer index (0 to m-1) to real ids.
-    - `fastknn.datautils` provides method to get `data` and `id_dict` easily from pandas dataframes.
+- Where `data` is a m x n numpy array matrix and `id_dict` is a python dictionary with mappings from integer index (0 to m-1) to real ids
+    - `fastknn.datautils` provides method to get `data` and `id_dict` easily from pandas dataframes
     
-- Other important parameters :  `data_type` (default: `dense`) and `dist_type` (default: `float`) - see main.py for examples.
+- To use FastKnn in supervised mode, provide a `target` parameter which is a python dictionary containing labels (classes or quantity target) related to `data`
+    
+- Other important parameters:  `data_type` (default: `dense`) and `dist_type` (default: `float`) - see main.py for examples
 
-- Once instantiated, `save` method saves as files :
+- Once instantiated, `save` method saves as files:
     - mappings from integer index to real ids as a json file
     - index parameters as a json file
     - index as a bin file
     
 - Get a saved FastKnn back by specifying `fastknn_folder`
 
-- Query a FastKnn by using `query_as_df` provided method with the following parameters 
+- Query a FastKnn object by using `query_as_df` provided method with the following parameters 
     - `query` - p x n numpy array - matrix to be matched to `data`
     - `k` - integer - the number of nearest neighbours (default `10`)
     - `query_index` - list of integer - index of the data provided in query (default: `None` - takes row index as index)
@@ -56,6 +58,13 @@ Example with dense data :
     - `same_ids` - bool - when querying the same data that was indexed, gets index + real ids (default: `False`)
     - `remove_identity` - bool - when querying the same data that was indexed, get `k` nearest neighbours without the perfect identity match (default: `False`)
 
+- Get prediction with a FastKnn object by using `prediction_as_df` provided method with the following parameters 
+    - `query` - p x n numpy array - matrix to be matched to `data`
+    - `k` - integer - the number of nearest neighbours (default `10`)
+    - `query_index` - list of integer - index of the data provided in query (default: `None` - takes row index as index)
+    - `same_ids` - bool - when querying the same data that was indexed, gets index + real ids (default: `False`)
+    - `remove_identity` - bool - when querying the same data that was indexed, get `k` nearest neighbours without the perfect identity match (default: `False`)
+    - `prediction_type` - string - `classification` (majority voting on the `k` nearest neighbours) or `regression` (mean on the `k` nearest neighbours)(default: `classification`)
 
 ## Development
 Clone project
