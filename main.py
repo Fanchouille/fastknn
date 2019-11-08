@@ -15,12 +15,14 @@ def main(data_type_demo="DENSE"):
         df = pd.read_csv("data/data_banknote_authentication.txt", delimiter=",", header=None)
 
         # Process data
-        data = du.get_data_matrix(df, [0, 1, 2, 3, 4])
+        data = du.get_data_matrix(df, [0, 1, 2, 3])
         # Fake index here (identity mapping)
         id_dict = dict(zip(df.index.values.tolist(), df.index.values.tolist()))
+        # Get target (last col) - binary class 0/1
+        target = du.get_id_dict_from_df(df, 4)
 
         # Create index...
-        fastknn = FastKnn(data, id_dict, index_space="l2")
+        fastknn = FastKnn(data=data, id_dict=id_dict, target=target, index_space="l2")
 
         # Save index
         fastknn.save("test_fastknn_dense")
@@ -34,6 +36,12 @@ def main(data_type_demo="DENSE"):
 
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
+        print(results_df)
+
+        # Predict with target metadata
+        prediction_df = fastknn.prediction_as_df(query, k=10, query_index=query_index,
+                                                 same_ids=True, remove_identity=True, prediction_type="classification")
+        print(prediction_df)
 
     elif data_type_demo == "SPARSE":
         # SPARSE DATA

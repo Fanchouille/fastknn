@@ -54,6 +54,7 @@ def create_sparse_matrix(df, dim1, dim2, value=None):
 
 def get_data_matrix(df, embeddings_columns):
     if len(embeddings_columns) == 1:
+        # if one col, col is expected to contain lists
         return np.stack(df.loc[:, embeddings_columns[0]].values).astype(np.float32)
     else:
         return df.loc[:, embeddings_columns].values.astype(np.float32)
