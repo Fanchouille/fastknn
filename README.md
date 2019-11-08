@@ -38,7 +38,7 @@ Example with dense data:
 - Where `data` is a m x n numpy array matrix and `id_dict` is a python dictionary with mappings from integer index (0 to m-1) to real ids
     - `fastknn.datautils` provides method to get `data` and `id_dict` easily from pandas dataframes
     
-- To use FastKnn in supervised mode, provide a `target` parameter which is a python dictionary containing labels (classes or quantity target) related to `data`
+- To use FastKnn in supervised mode, provide a `target` parameter which is a python dictionary containing labels (classes or quantity target) related to `data` (default: `None`: unsupervised mode)
     
 - Other important parameters:  `data_type` (default: `dense`) and `dist_type` (default: `float`) - see main.py for examples
 
