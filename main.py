@@ -81,6 +81,7 @@ def main(data_type_demo="DENSE"):
         # Load recipe dataset
         df = pd.read_json("data/recipe_dataset.json")
         df.loc[:, "ingredients"] = df.loc[:, "ingredients"].map(lambda x: " ".join(ing for ing in x))
+        df = df.head(1000)
 
         # Process data
         data, id_dict = df.loc[:, "ingredients"].to_numpy(), du.get_id_dict_from_df(df, id_column="id")

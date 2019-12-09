@@ -1,4 +1,5 @@
 import nmslib
+import time
 
 data_types = {"dense": nmslib.DataType.DENSE_VECTOR,
               "string": nmslib.DataType.OBJECT_AS_STRING,
@@ -41,12 +42,18 @@ class NMSIndexer(object):
         return index
 
     def add_batch_data(self, data, ids):
+        start = time.time()
         self.index.addDataPointBatch(data, ids)
+        end = time.time()
+        print('Add data time = %f' % (end - start))
 
     def train_index(self):
         index_time_params = {'M': self.index_params["M"], 'indexThreadQty': self.index_params["num_threads"],
                              'efConstruction': self.index_params["efC"], 'post': 2}
+        start = time.time()
         self.index.createIndex(index_time_params)
+        end = time.time()
+        print('Index creation time = %f' % (end - start))
 
     def save_index(self, index_path):
         if (self.index_params["method"] == "hnsw") and (self.index_params["space"] in ["cosinesimil", "l2"]):
@@ -56,8 +63,10 @@ class NMSIndexer(object):
 
     def query_index_batch_by_vector(self, query, k=10):
         self.index.setQueryTimeParams({'efSearch': self.index_params["efS"]})
+        start = time.time()
         knns = self.index.knnQueryBatch(query, k=k, num_threads=self.index_params["num_threads"])
-        print(len(knns))
+        end = time.time()
+        print('Query time = %f' % (end - start))
         ids = [knn[0] for knn in knns]
         distances = [knn[1] for knn in knns]
         return ids, distances

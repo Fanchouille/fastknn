@@ -24,4 +24,4 @@ dependencies:
   - pybind11
   - ujson
   - pip:
-    - nmslib
+    - nmslib # pip install --no-binary :all: nmslib
