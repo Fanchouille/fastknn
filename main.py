@@ -70,10 +70,43 @@ def main(data_type_demo="DENSE"):
 
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
+        print(results_df.loc[:, ["id", "nearest_neighbours"]])
+
+    elif data_type_demo == "TEXT":
+        # TEXT DATA
+        print("*" * 100)
+        print("TEXT DATA")
+        print("*" * 100)
+
+        # Load recipe dataset
+        df = pd.read_json("data/recipe_dataset.json")
+        df.loc[:, "ingredients"] = df.loc[:, "ingredients"].map(lambda x: " ".join(ing for ing in x))
+
+        # Process data
+        data, id_dict = df.loc[:, "ingredients"].to_numpy(), du.get_id_dict_from_df(df, id_column="id")
+
+        # Create index...
+        # index_space = "leven" for levenstein distance => use dist_type = "int"
+        # /!\ data is expected to be a list
+        fastknn = FastKnn(data=data.tolist(), id_dict=id_dict, index_space="leven", data_type="string", dist_type="int")
+
+        # Save index
+        fastknn.save("test_fastknn_text")
+
+        # ...or load if exists
+        fastknn = FastKnn(fastknn_folder="test_fastknn_text")
+
+        # Choose sample vectors (pass query as a list here)
+        query_index = [0, 1, 2]
+        query = data[query_index].tolist()
+
+        # Query index & get results as df
+        results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
+        print(results_df.loc[:, ["id", "nearest_neighbours"]])
 
     else:
         pass
 
 
 if __name__ == '__main__':
-    main("DENSE")
+    main("TEXT")

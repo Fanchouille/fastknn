@@ -20,7 +20,8 @@ tmp/
 # tensorboard runs
 runs/
 
-runs/
+# indexes
+test_fastknn_*
 
 # pyc
 *.pyc
