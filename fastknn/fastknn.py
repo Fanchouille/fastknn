@@ -104,8 +104,13 @@ class FastKnn(object):
         result_df = self.query_as_df(query, k=k, query_index=query_index, same_ids=same_ids,
                                      remove_identity=remove_identity)
 
-        result_df.loc[:, "nn_targets"] = result_df.loc[:, "nearest_neighbours"].map(
-            lambda x: [self.target[i] for i in x])
+        if same_ids:  # then we can map indexes back to real ids
+            ref_index_dict = {v: k for k, v in self.ref_id_dict.items()}
+            result_df.loc[:, "nn_targets"] = result_df.loc[:, "nearest_neighbours"] \
+                .map(lambda x: [ref_index_dict[i] for i in x]).map(lambda x: [self.target[i] for i in x])
+        else:
+            result_df.loc[:, "nn_targets"] = result_df.loc[:, "nearest_neighbours"] \
+                .map(lambda x: [self.target[i] for i in x])
 
         if prediction_type == "classification":
             result_df.loc[:, "predictions"] = result_df.loc[:, "nn_targets"].map(self.most_frequent_value)

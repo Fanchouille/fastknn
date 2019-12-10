@@ -85,11 +85,12 @@ def main(data_type_demo="DENSE"):
 
         # Process data
         data, id_dict = df.loc[:, "ingredients"].to_numpy(), du.get_id_dict_from_df(df, id_column="id")
+        target = du.get_id_dict_from_df(df, id_column="cuisine")
 
         # Create index...
         # index_space = "leven" for levenstein distance => use dist_type = "int"
         # /!\ data is expected to be a list
-        fastknn = FastKnn(data=data.tolist(), id_dict=id_dict, index_space="leven", data_type="string", dist_type="int")
+        fastknn = FastKnn(data=data.tolist(), id_dict=id_dict, target=target, index_space="leven", data_type="string", dist_type="int")
 
         # Save index
         fastknn.save("test_fastknn_text")
@@ -104,6 +105,11 @@ def main(data_type_demo="DENSE"):
         # Query index & get results as df
         results_df = fastknn.query_as_df(query, k=10, query_index=query_index, same_ids=True, remove_identity=True)
         print(results_df.loc[:, ["id", "nearest_neighbours"]])
+
+        # Predict with target metadata
+        prediction_df = fastknn.prediction_as_df(query, k=10, query_index=query_index,
+                                                 same_ids=True, remove_identity=True, prediction_type="classification")
+        print(prediction_df)
 
     else:
         pass
